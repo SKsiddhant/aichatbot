@@ -1,16 +1,24 @@
 import numpy as np
 import nltk
-nltk.download('punkt')
 from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import NLTKWordTokenizer
+
 stemmer = PorterStemmer()
+_fallback_tokenizer = NLTKWordTokenizer()  # needs no downloaded data
 
 
 def tokenize(sentence):
     """
     split sentence into array of words/tokens
     a token can be a word or punctuation character, or number
+
+    Uses NLTK's punkt-based tokenizer when its data is installed (``python -c "import nltk; nltk.download('punkt_tab')"``),
+    otherwise falls back to the data-free Treebank word tokenizer so the bot still works offline.
     """
-    return nltk.word_tokenize(sentence)
+    try:
+        return nltk.word_tokenize(sentence)
+    except LookupError:
+        return _fallback_tokenizer.tokenize(sentence)
 
 
 def stem(word):
@@ -33,12 +41,10 @@ def bag_of_words(tokenized_sentence, words):
     words = ["hi", "hello", "I", "you", "bye", "thank", "cool"]
     bog   = [  0 ,    1 ,    0 ,   1 ,    0 ,    0 ,      0]
     """
-    # stem each word
-    sentence_words = [stem(word) for word in tokenized_sentence]
-    # initialize bag with 0 for each word
+    sentence_words = {stem(word) for word in tokenized_sentence}
     bag = np.zeros(len(words), dtype=np.float32)
     for idx, w in enumerate(words):
-        if w in sentence_words: 
+        if w in sentence_words:
             bag[idx] = 1
 
     return bag

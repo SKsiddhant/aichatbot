@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+data.pth
+conversation_history_*.json
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store

@@ -1,0 +1,4 @@
+pytest
+openai>=1.0
+tiktoken
+python-dotenv

@@ -66,8 +66,13 @@ def get_response(msg):
 
 if __name__ == "__main__":
     print("Let's chat! (type 'quit' to exit)")
-    while True:
-        sentence = input("You: ")
-        if sentence == "quit":
-            break
-        print(get_response(sentence))
+    try:
+        while True:
+            sentence = input("You: ")
+            if sentence.strip().lower() == "quit":
+                break
+            print(get_response(sentence))
+    except ModelNotTrained as exc:
+        raise SystemExit(str(exc))
+    except (EOFError, KeyboardInterrupt):
+        print()  # Ctrl-D / Ctrl-C ends the chat without a traceback
